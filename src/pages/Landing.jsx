@@ -1,0 +1,208 @@
+import React from 'react';
+import { 
+  Video, Shield, Database, Fingerprint, 
+  ArrowRight, MessageSquare, Send, ExternalLink, Zap
+} from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ConnectButton, useCurrentAccount } from '@mysten/dapp-kit';
+import { useNavigate, Link } from 'react-router-dom';
+import { useEffect } from 'react';
+
+const Navbar = () => {
+  const currentAccount = useCurrentAccount();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (currentAccount) {
+      navigate('/dashboard');
+    }
+  }, [currentAccount, navigate]);
+
+  return (
+    <nav className="neobrutal-nav">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 border-[3px] border-black rounded-xl flex items-center justify-center bg-white" style={{ boxShadow: '3px 3px 0px 0px #000' }}>
+          <Video className="text-black w-6 h-6" />
+        </div>
+        <span className="text-2xl font-bold tracking-tight text-black font-heading">SuiMeet</span>
+      </div>
+      
+      <div className="hidden md:flex items-center gap-10 nav-links">
+        <Link to="/dashboard" className="nav-link">Dashboard</Link>
+        <a href="#" className="nav-link">Features</a>
+        <a href="#" className="nav-link">Pricing</a>
+      </div>
+
+      <div className="flex justify-end w-full">
+        <ConnectButton className="!bg-black !text-white !font-bold !border-[3px] !border-black !rounded-xl !shadow-[4px_4px_0px_0px_#008248] hover:!translate-y-1 transition-transform" />
+      </div>
+    </nav>
+  );
+};
+
+const FeatureCard = ({ icon: Icon, title, description }) => (
+  <motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    className="neobrutal-card flex flex-col gap-6"
+  >
+    <div className="w-14 h-14 border-[3px] border-black rounded-2xl flex items-center justify-center bg-white transition-transform duration-500 hover:-translate-y-1" style={{ boxShadow: '4px 4px 0px 0px #000' }}>
+      <Icon className="text-black w-7 h-7" />
+    </div>
+    <h3 className="text-2xl font-bold text-black font-heading">{title}</h3>
+    <p className="text-slate-600 leading-relaxed font-medium">{description}</p>
+  </motion.div>
+);
+
+const Landing = () => {
+  return (
+    <div className="app-container font-sans bg-white text-black">
+      <Navbar />
+      
+      {/* Hero Section */}
+      <section className="relative px-6 pt-40 pb-32 max-w-7xl mx-auto z-10 text-left md:text-center flex flex-col items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col items-center"
+        >
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border-[3px] border-black bg-white font-bold text-black mb-10 uppercase tracking-widest shadow-[4px_4px_0px_0px_#000]">
+            <Zap className="w-4 h-4" />
+            Empowering Sovereign Communication
+          </div>
+          <h1 className="text-5xl md:text-7xl font-bold leading-[1.1] mb-8 text-black max-w-4xl font-heading">
+            The World's <br className="hidden md:block" />
+            <span className="text-white bg-[#008248] px-4 py-1 inline-block border-[3px] border-black shadow-[6px_6px_0px_0px_#000] transform -rotate-2 my-2">Decentralized</span> <br className="hidden md:block" />
+            Meeting Protocol
+          </h1>
+          <p className="text-slate-600 font-medium text-lg md:text-xl mb-12 max-w-2xl leading-relaxed">
+            SuiMeet provides enterprise-grade, sharded communication infrastructure 
+            so you can focus on building sovereign connections.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-6 mb-24">
+            <Link to="/dashboard" className="neobrutal-btn primary text-lg px-10 py-4">
+              Get Started
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <button className="neobrutal-btn secondary text-lg px-10 py-4">
+              Documentation
+            </button>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-10 md:gap-16">
+             <div className="border-[3px] border-black px-6 py-3 rounded-xl font-bold text-lg uppercase shadow-[4px_4px_0px_0px_#000] bg-white">Sui Network</div>
+             <div className="border-[3px] border-black px-6 py-3 rounded-xl font-bold text-lg uppercase shadow-[4px_4px_0px_0px_#000] bg-white">Walrus</div>
+             <div className="border-[3px] border-black px-6 py-3 rounded-xl font-bold text-lg uppercase shadow-[4px_4px_0px_0px_#000] bg-white">zkLogin</div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Features Section */}
+      <section className="relative py-32 px-6 border-t-[3px] border-black bg-[#f0fdf4]">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-20 text-center">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-black font-heading">Infrastructure-First Design</h2>
+            <p className="text-slate-600 max-w-2xl mx-auto text-lg font-medium">High-performance decentralized modules engineered for security.</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <FeatureCard 
+              icon={Shield}
+              title="Secure P2P"
+              description="Video and audio data is transmitted directly between peers using sharded signaling, ensuring absolute privacy."
+            />
+            <FeatureCard 
+              icon={Database}
+              title="Walrus Storage"
+              description="Meeting recordings are encrypted and distributed across the Walrus decentralized network for permanent redundancy."
+            />
+            <FeatureCard 
+              icon={Fingerprint}
+              title="zkLogin Ready"
+              description="Access the platform using your existing social accounts while maintaining full ownership of your cryptographic identity."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="relative py-32 px-6 border-t-[3px] border-black bg-white">
+        <div className="max-w-7xl mx-auto border-[3px] border-black bg-[#008248] p-12 md:p-24 relative overflow-hidden rounded-[40px] shadow-[12px_12px_0px_0px_#000]">
+          <div className="relative z-10 text-center flex flex-col items-center">
+            <h2 className="text-4xl md:text-6xl font-bold mb-8 leading-tight text-white font-heading">
+              Ready to experience <br />
+              true sovereignty?
+            </h2>
+            <p className="text-white/90 font-medium text-xl mb-12 max-w-2xl">
+              Start your first decentralized meeting today. <br className="hidden md:block" />
+              The sovereign bridge for professional communication.
+            </p>
+            <Link to="/dashboard" className="neobrutal-btn secondary text-xl px-12 py-5 transform hover:scale-105">
+              Initialize Node
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t-[3px] border-black py-20 px-8 bg-[#f0fdf4]">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16">
+          <div className="col-span-1">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 border-[3px] border-black bg-white rounded-xl flex items-center justify-center shadow-[3px_3px_0px_0px_#000]">
+                <Video className="text-black w-6 h-6" />
+              </div>
+              <span className="text-2xl font-bold text-black font-heading">SuiMeet</span>
+            </div>
+            <p className="text-slate-600 text-sm leading-relaxed max-w-xs font-medium">
+              Professional decentralized communication built on the next generation of blockchain infrastructure.
+            </p>
+          </div>
+          
+          <div>
+            <h4 className="font-bold text-black mb-6 text-sm uppercase tracking-widest font-heading">Product</h4>
+            <ul className="space-y-4 text-sm text-slate-600 font-bold">
+              <li className="hover:text-[#008248] cursor-pointer transition-colors">Meetings</li>
+              <li className="hover:text-[#008248] cursor-pointer transition-colors">Recordings</li>
+              <li className="hover:text-[#008248] cursor-pointer transition-colors">Contacts</li>
+              <li className="hover:text-[#008248] cursor-pointer transition-colors">API</li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 className="font-bold text-black mb-6 text-sm uppercase tracking-widest font-heading">Technology</h4>
+            <ul className="space-y-4 text-sm text-slate-600 font-bold">
+              <li className="hover:text-[#008248] cursor-pointer transition-colors">Sui Network</li>
+              <li className="hover:text-[#008248] cursor-pointer transition-colors">Walrus Storage</li>
+              <li className="hover:text-[#008248] cursor-pointer transition-colors">zkLogin</li>
+              <li className="hover:text-[#008248] cursor-pointer transition-colors">Open Source</li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 className="font-bold text-black mb-6 text-sm uppercase tracking-widest font-heading">Community</h4>
+            <div className="flex gap-4">
+              {[Send, MessageSquare, ExternalLink].map((Icon, i) => (
+                <div key={i} className="w-12 h-12 bg-white border-[3px] border-black rounded-xl flex items-center justify-center hover:-translate-y-1 transition-transform cursor-pointer text-black shadow-[4px_4px_0px_0px_#000]">
+                  <Icon className="w-5 h-5" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto mt-20 pt-8 border-t-[3px] border-black flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-black font-bold uppercase tracking-widest">
+          <span>© 2026 SuiMeet. Built on Sui.</span>
+          <div className="flex gap-8">
+            <span className="hover:text-[#008248] cursor-pointer transition-colors">Privacy</span>
+            <span className="hover:text-[#008248] cursor-pointer transition-colors">Terms</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default Landing;

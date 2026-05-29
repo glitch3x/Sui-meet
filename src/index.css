@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #008248;
+  --color-primary-light: #00b363;
+  --color-secondary: #f0fdf4;
+  --color-dark: #000000;
+  
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-heading: "Space Grotesk", sans-serif;
+}
+
+@layer base {
+  :root {
+    --bg-color: #ffffff;
+    --surface-color: #ffffff;
+    --primary-green: #008248;
+    --primary-light: #00b363;
+    --text-primary: #000000;
+    --text-secondary: #555555;
+    
+    --border-width: 3px;
+    --border-radius: 12px;
+    
+    --hard-shadow: 6px 6px 0px 0px #000000;
+    --hard-shadow-hover: 8px 8px 0px 0px #000000;
+    --hard-shadow-active: 2px 2px 0px 0px #000000;
+    
+    --transition-fast: 0.15s ease-out;
+    --transition-smooth: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    background-image: radial-gradient(#e5e7eb 1.5px, transparent 1.5px);
+    background-size: 30px 30px;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+}
+
+@layer components {
+  .neobrutal-btn {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-bold border-[3px] border-black rounded-xl bg-white text-black transition-all duration-150;
+    box-shadow: var(--hard-shadow);
+  }
+  
+  .neobrutal-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--hard-shadow-hover);
+  }
+  
+  .neobrutal-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: var(--hard-shadow-active);
+  }
+  
+  .neobrutal-btn.primary {
+    background-color: var(--primary-green);
+    color: white;
+  }
+
+  .neobrutal-btn.secondary {
+    background-color: white;
+    color: black;
+  }
+
+  .neobrutal-card {
+    @apply border-[3px] border-black bg-white rounded-2xl p-8 transition-all duration-300;
+    box-shadow: var(--hard-shadow);
+  }
+
+  .neobrutal-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 10px 10px 0px 0px #000000;
+  }
+
+  .neobrutal-nav {
+    @apply fixed top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-6xl h-20 px-10 grid grid-cols-[1fr_auto_1fr] items-center bg-white border-[3px] border-black rounded-[40px] z-50;
+    box-shadow: var(--hard-shadow);
+  }
+
+  .nav-link {
+    @apply font-bold text-black transition-colors duration-150 hover:text-primary;
+  }
+}
+
+/* Hide scrollbars globally but keep functionality */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+*::-webkit-scrollbar {
+  display: none; /* WebKit */
+}
+
+.glowing-text {
+  background: linear-gradient(90deg, #000 0%, var(--primary-green) 50%, #000 100%);
+  -webkit-text-fill-color: transparent;
+  background-size: 200%;
+  -webkit-background-clip: text;
+  animation: 4s linear infinite shine;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200%;
+  }
+}
