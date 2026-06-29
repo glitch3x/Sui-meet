@@ -8,9 +8,11 @@ import { useSui, PACKAGE_ID } from '../context/SuiContext';
 import PageTransition from '../components/PageTransition';
 import { Transaction } from '@mysten/sui/transactions';
 import { useState } from 'react';
+import { useCurrentAccount, ConnectButton } from '@mysten/dapp-kit';
 
 const Dashboard = () => {
   const { userAddress, initializeInvisibleWallet, logout, isLoading, suiClient, keypair } = useSui();
+  const currentAccount = useCurrentAccount();
   const [isCreating, setIsCreating] = useState(false);
   const [joinId, setJoinId] = useState('');
   const [joinPassword, setJoinPassword] = useState('');
@@ -202,13 +204,17 @@ const Dashboard = () => {
             <div className="w-11 h-11 rounded-xl overflow-hidden border border-gray-200 cursor-pointer shadow-sm bg-slate-100">
               <img src="/avatar.png" className="w-full h-full object-cover" alt="User" />
             </div>
-            <button 
-              onClick={userAddress ? logout : initializeInvisibleWallet}
-              disabled={isLoading}
-              className={`neobrutal-btn !px-6 !py-2 text-sm ${userAddress ? 'bg-slate-100 text-black border border-gray-200' : 'bg-black text-white'}`}
-            >
-              {isLoading ? 'Syncing...' : userAddress ? 'Disconnect' : 'Initialize'}
-            </button>
+            {currentAccount ? (
+              <ConnectButton className="!bg-white !text-black !font-bold !border !border-gray-200 !rounded-xl !shadow-sm hover:!bg-slate-50 transition-colors !px-4 !py-2 !text-sm" />
+            ) : (
+              <button 
+                onClick={userAddress ? logout : initializeInvisibleWallet}
+                disabled={isLoading}
+                className={`neobrutal-btn !px-6 !py-2 text-sm ${userAddress ? 'bg-slate-100 text-black border border-gray-200' : 'bg-black text-white'}`}
+              >
+                {isLoading ? 'Syncing...' : userAddress ? 'Disconnect Session' : 'Initialize Session'}
+              </button>
+            )}
           </div>
         </header>
         
@@ -274,10 +280,10 @@ const Dashboard = () => {
                   <span className="px-3 py-1 bg-white text-black border border-gray-200 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm">ZK-Verified</span>
                 </div>
                 
-                <h3 className="text-2xl font-bold mb-3 font-heading text-white">Sovereign Identity</h3>
+                <h3 className="text-2xl font-bold mb-3 font-heading text-white">Ephemeral Session Key</h3>
                 <p className="text-white/90 text-sm mb-8 leading-relaxed font-medium">
-                  Your identity is secured by the Sui ledger. All sessions are 
-                  cryptographically sharded.
+                  To prevent wallet popups during video calls, we generate an invisible 
+                  temporary identity specifically for this session.
                 </p>
                 
                 <div className="bg-white border border-gray-200 rounded-xl p-3 flex items-center justify-between shadow-sm">
