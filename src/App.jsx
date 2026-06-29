@@ -23,7 +23,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
-        <WalletProvider autoConnect>
+        <WalletProvider>
           <SuiProvider>
       <Router>
         <Routes>
