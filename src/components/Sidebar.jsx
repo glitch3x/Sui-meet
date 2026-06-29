@@ -25,10 +25,7 @@ const Sidebar = () => {
     <aside className="w-64 lg:w-72 border-r border-gray-200 hidden md:flex flex-col bg-[#f0fdf4] sticky top-0 h-screen z-30 shrink-0">
       {/* Brand Logo */}
       <div className="px-8 pt-10 pb-10 flex items-center gap-3">
-        <div className="w-10 h-10 border border-gray-200 rounded-xl flex items-center justify-center bg-white shadow-sm">
-          <Video className="text-black w-5 h-5" />
-        </div>
-        <h1 className="text-2xl font-bold text-black tracking-tight font-heading">SuiMeet</h1>
+        <img src="/logo.png" alt="SuiMeet" className="h-14 w-auto object-contain" />
       </div>
 
       {/* User Profile */}

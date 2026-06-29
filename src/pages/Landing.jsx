@@ -21,10 +21,7 @@ const Navbar = () => {
   return (
     <nav className="neobrutal-nav">
       <div className="flex items-center gap-2 md:gap-3">
-        <div className="w-8 h-8 md:w-10 md:h-10 border md:border border-gray-200 rounded-lg md:rounded-xl flex items-center justify-center bg-white" >
-          <Video className="text-black w-4 h-4 md:w-6 md:h-6" />
-        </div>
-        <span className="text-lg md:text-2xl font-bold tracking-tight text-black font-heading">SuiMeet</span>
+        <img src="/logo.png" alt="SuiMeet" className="h-12 md:h-16 w-auto object-contain" />
       </div>
       
       <div className="hidden md:flex items-center gap-10 nav-links">
@@ -152,10 +149,7 @@ const Landing = () => {
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16">
           <div className="col-span-1">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 border border-gray-200 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                <Video className="text-black w-6 h-6" />
-              </div>
-              <span className="text-2xl font-bold text-black font-heading">SuiMeet</span>
+              <img src="/logo.png" alt="SuiMeet" className="h-16 w-auto object-contain" />
             </div>
             <p className="text-slate-600 text-sm leading-relaxed max-w-xs font-medium">
               Professional decentralized communication built on the next generation of blockchain infrastructure.
