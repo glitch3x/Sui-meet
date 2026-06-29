@@ -111,7 +111,7 @@ const Contacts = () => {
               <div className="md:col-span-8 bg-white border border-slate-100 p-12 rounded-[40px] shadow-sm flex items-center gap-12 group hover:border-primary/20 transition-all duration-500">
                 <div className="w-40 h-40 rounded-[32px] overflow-hidden border-2 border-slate-50 shadow-md relative group-hover:scale-105 transition-all duration-500">
                   <img src="/avatar.png" className="w-full h-full object-cover" alt="Sarah Jenkins" />
-                  <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-green-500 border-[4px] border-white rounded-full animate-pulse" />
+                  <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-green-500 border border-white rounded-full animate-pulse" />
                 </div>
                 
                 <div className="flex-1 space-y-6">

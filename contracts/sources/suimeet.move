@@ -20,6 +20,13 @@ module suimeet::room {
         host: address,
     }
 
+    /// Event emitted when a recording is submitted
+    public struct RecordingSubmittedEvent has copy, drop {
+        room_id: ID,
+        blob_id: String,
+        submitter: address,
+    }
+
     /// Event emitted for WebRTC signaling (Offer, Answer, ICE Candidate)
     public struct SignalEvent has copy, drop {
         room_id: ID,
@@ -74,6 +81,23 @@ module suimeet::room {
             recipient,
             signal_type,
             payload,
+        });
+    }
+
+    /// Submit a recording blob ID to the room
+    public entry fun submit_recording(
+        room: &mut MeetingRoom,
+        blob_id: String,
+        ctx: &mut TxContext
+    ) {
+        // Anyone in the room can submit a recording for now, or we could restrict to host.
+        // Let's allow anyone to submit their local recording.
+        assert!(room.is_active, 1); // ERoomNotActive
+
+        event::emit(RecordingSubmittedEvent {
+            room_id: object::id(room),
+            blob_id,
+            submitter: tx_context::sender(ctx),
         });
     }
 }

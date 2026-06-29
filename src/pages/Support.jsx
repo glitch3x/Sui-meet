@@ -8,8 +8,8 @@ const Support = () => {
     <div className="flex h-screen bg-white font-sans text-black overflow-hidden">
       <Sidebar />
       <PageTransition className="flex-1 flex flex-col h-full overflow-hidden">
-        <header className="px-10 py-6 border-b-[3px] border-black bg-white z-20 shrink-0 flex items-center gap-4">
-          <div className="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center shadow-[4px_4px_0px_0px_#000]">
+        <header className="px-10 py-6 border-b-[3px] border-gray-200 bg-white z-20 shrink-0 flex items-center gap-4">
+          <div className="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center shadow-sm">
             <HelpCircle className="w-6 h-6" />
           </div>
           <h2 className="text-2xl font-bold font-heading">Support Center</h2>
@@ -27,12 +27,12 @@ const Support = () => {
                 <input 
                   type="text" 
                   placeholder="Subject" 
-                  className="w-full bg-white border-[3px] border-black rounded-xl py-3 px-4 text-sm focus:outline-none focus:shadow-[4px_4px_0px_0px_#000] transition-all font-bold"
+                  className="w-full bg-white border border-gray-200 rounded-xl py-3 px-4 text-sm focus:outline-none focus:shadow-sm transition-all font-bold"
                 />
                 <textarea 
                   rows={5}
                   placeholder="Describe your issue..." 
-                  className="w-full bg-white border-[3px] border-black rounded-xl py-3 px-4 text-sm focus:outline-none focus:shadow-[4px_4px_0px_0px_#000] transition-all font-bold resize-none"
+                  className="w-full bg-white border border-gray-200 rounded-xl py-3 px-4 text-sm focus:outline-none focus:shadow-sm transition-all font-bold resize-none"
                 />
                 <button className="neobrutal-btn primary w-full justify-center !py-4 text-lg mt-2">
                   <Send className="w-5 h-5" />

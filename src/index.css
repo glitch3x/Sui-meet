@@ -7,7 +7,7 @@
   --color-dark: #000000;
   
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-heading: "Space Grotesk", sans-serif;
+  --font-heading: "Outfit", sans-serif;
 }
 
 @layer base {
@@ -19,12 +19,12 @@
     --text-primary: #000000;
     --text-secondary: #555555;
     
-    --border-width: 3px;
-    --border-radius: 12px;
+    --border-width: 1px;
+    --border-radius: 16px;
     
-    --hard-shadow: 6px 6px 0px 0px #000000;
-    --hard-shadow-hover: 8px 8px 0px 0px #000000;
-    --hard-shadow-active: 2px 2px 0px 0px #000000;
+    --soft-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+    --soft-shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --soft-shadow-active: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     
     --transition-fast: 0.15s ease-out;
     --transition-smooth: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
@@ -50,47 +50,49 @@
 
 @layer components {
   .neobrutal-btn {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-bold border-[3px] border-black rounded-xl bg-white text-black transition-all duration-150;
-    box-shadow: var(--hard-shadow);
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-medium border border-gray-200 rounded-xl bg-white text-black transition-all duration-300;
+    box-shadow: var(--soft-shadow);
   }
   
   .neobrutal-btn:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: var(--hard-shadow-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--soft-shadow-hover);
   }
   
   .neobrutal-btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: var(--hard-shadow-active);
+    transform: translateY(1px);
+    box-shadow: var(--soft-shadow-active);
   }
   
   .neobrutal-btn.primary {
     background-color: var(--primary-green);
     color: white;
+    border-color: var(--primary-green);
   }
 
   .neobrutal-btn.secondary {
     background-color: white;
     color: black;
+    border-color: #e5e7eb;
   }
 
   .neobrutal-card {
-    @apply border-[3px] border-black bg-white rounded-2xl p-8 transition-all duration-300;
-    box-shadow: var(--hard-shadow);
+    @apply border border-gray-100 bg-white rounded-2xl p-8 transition-all duration-300;
+    box-shadow: var(--soft-shadow);
   }
 
   .neobrutal-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 10px 10px 0px 0px #000000;
+    transform: translateY(-4px);
+    box-shadow: var(--soft-shadow-hover);
   }
 
   .neobrutal-nav {
-    @apply fixed top-4 md:top-6 left-1/2 -translate-x-1/2 w-[95%] md:w-[90%] max-w-6xl h-16 md:h-20 px-4 md:px-10 flex justify-between items-center bg-white border-[3px] border-black rounded-[30px] md:rounded-[40px] z-50;
-    box-shadow: var(--hard-shadow);
+    @apply fixed top-4 md:top-6 left-1/2 -translate-x-1/2 w-[95%] md:w-[90%] max-w-6xl h-16 md:h-20 px-4 md:px-10 flex justify-between items-center bg-white/90 backdrop-blur-md border border-gray-200 rounded-[30px] md:rounded-[40px] z-50;
+    box-shadow: var(--soft-shadow);
   }
 
   .nav-link {
-    @apply font-bold text-black transition-colors duration-150 hover:text-primary;
+    @apply font-medium text-gray-600 transition-colors duration-200 hover:text-primary;
   }
 }
 

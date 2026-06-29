@@ -8,8 +8,8 @@ const Privacy = () => {
     <div className="flex h-screen bg-white font-sans text-black overflow-hidden">
       <Sidebar />
       <PageTransition className="flex-1 flex flex-col h-full overflow-hidden">
-        <header className="px-10 py-6 border-b-[3px] border-black bg-white z-20 shrink-0 flex items-center gap-4">
-          <div className="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center shadow-[4px_4px_0px_0px_#000]">
+        <header className="px-10 py-6 border-b-[3px] border-gray-200 bg-white z-20 shrink-0 flex items-center gap-4">
+          <div className="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center shadow-sm">
             <Shield className="w-6 h-6" />
           </div>
           <h2 className="text-2xl font-bold font-heading">Privacy Policy</h2>
@@ -25,7 +25,7 @@ const Privacy = () => {
               </p>
             </div>
             
-            <div className="border-[3px] border-black rounded-xl p-6 bg-[#008248] text-white shadow-[4px_4px_0px_0px_#000]">
+            <div className="border border-gray-200 rounded-xl p-6 bg-[#008248] text-white shadow-sm">
               <h4 className="text-xl font-bold font-heading mb-2">Decentralized Storage</h4>
               <p className="font-medium text-white/90">
                 Any data you choose to save is cryptographically sharded and stored on the Walrus network. 

@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
+import { PACKAGE_ID } from '../context/SuiContext';
+import { Transaction } from '@mysten/sui/transactions';
 
-export const useWebRTC = (suiClient, keypair, roomId, isHost) => {
+export const useWebRTC = (suiClient, keypair, roomId, isHost, onChatMessage) => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const peerConnection = useRef(null);
-  const channelRef = useRef(null);
+  const dataChannelRef = useRef(null);
+  const unsubscribeRef = useRef(null);
+  const userAddress = keypair ? keypair.getPublicKey().toSuiAddress() : null;
 
   const servers = {
     iceServers: [
@@ -13,21 +17,54 @@ export const useWebRTC = (suiClient, keypair, roomId, isHost) => {
     iceCandidatePoolSize: 10,
   };
 
-  const sendSignal = (signalType, payloadObj) => {
-    if (!channelRef.current) return;
+  const sendSignal = async (signalType, payloadObj) => {
+    if (!keypair || !roomId) return;
     
-    channelRef.current.postMessage({
-      signal_type: signalType,
-      payload: payloadObj,
-      isHost: isHost
+    // signalType: 0=Offer, 1=Answer, 2=ICE
+    const payloadStr = JSON.stringify({ ...payloadObj, isHost });
+    const payloadBytes = Array.from(new TextEncoder().encode(payloadStr));
+
+    const tx = new Transaction();
+    tx.moveCall({
+      target: `${PACKAGE_ID}::room::send_signal`,
+      arguments: [
+        tx.object(roomId),
+        tx.pure.address('0x0000000000000000000000000000000000000000000000000000000000000000'), // 0x0 equivalent in Sui
+        tx.pure.u8(signalType),
+        tx.pure.vector('u8', payloadBytes)
+      ],
     });
+
+    try {
+      await suiClient.signAndExecuteTransaction({
+        transaction: tx,
+        signer: keypair,
+      });
+      console.log(`Sent signal ${signalType} to chain`);
+    } catch (e) {
+      console.error("Failed to send signal to chain:", e);
+    }
+  };
+
+  const setupDataChannel = (channel) => {
+    channel.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      if (onChatMessage) onChatMessage(msg);
+    };
+    channel.onopen = () => console.log("Data channel open");
+    channel.onclose = () => console.log("Data channel closed");
+  };
+
+  const sendChatMessage = (msgObj) => {
+    if (dataChannelRef.current && dataChannelRef.current.readyState === 'open') {
+      dataChannelRef.current.send(JSON.stringify(msgObj));
+    } else {
+      console.warn("Data channel not open");
+    }
   };
 
   useEffect(() => {
-    if (!roomId) return;
-
-    // Create a BroadcastChannel specific to this roomId
-    channelRef.current = new BroadcastChannel(`webrtc_room_${roomId}`);
+    if (!roomId || !keypair) return;
 
     const init = async () => {
       try {
@@ -57,37 +94,55 @@ export const useWebRTC = (suiClient, keypair, roomId, isHost) => {
           }
         };
 
-        // Listen for messages from the other peer
-        channelRef.current.onmessage = async (event) => {
-          const { signal_type, payload, isHost: senderIsHost } = event.data;
-          
-          // Ignore messages from same role
-          if (senderIsHost === isHost) return;
+        if (isHost) {
+          dataChannelRef.current = peerConnection.current.createDataChannel('chat');
+          setupDataChannel(dataChannelRef.current);
+        } else {
+          peerConnection.current.ondatachannel = (event) => {
+            dataChannelRef.current = event.channel;
+            setupDataChannel(dataChannelRef.current);
+          };
+        }
 
-          if (signal_type === 0 && !isHost) { // Offer
-            await peerConnection.current.setRemoteDescription(new RTCSessionDescription(payload));
-            const answer = await peerConnection.current.createAnswer();
-            await peerConnection.current.setLocalDescription(answer);
-            sendSignal(1, answer);
-          } else if (signal_type === 1 && isHost) { // Answer
-            await peerConnection.current.setRemoteDescription(new RTCSessionDescription(payload));
-          } else if (signal_type === 2) { // ICE
-            try {
-              await peerConnection.current.addIceCandidate(new RTCIceCandidate(payload));
-            } catch (e) {
-              console.error('Error adding ICE', e);
+        // Subscribe to Sui events for signaling
+        const unsubscribe = await suiClient.subscribeEvent({
+          filter: { MoveEventType: `${PACKAGE_ID}::room::SignalEvent` },
+          onMessage: async (event) => {
+            const { room_id, sender, signal_type, payload } = event.parsedJson;
+            if (room_id !== roomId) return;
+            if (sender === userAddress) return; // ignore our own signals
+
+            const payloadStr = new TextDecoder().decode(new Uint8Array(payload));
+            const parsedPayload = JSON.parse(payloadStr);
+            
+            // Ignore messages from same role
+            if (parsedPayload.isHost === isHost) return;
+
+            if (signal_type === 0 && !isHost) { // Offer
+              await peerConnection.current.setRemoteDescription(new RTCSessionDescription(parsedPayload));
+              const answer = await peerConnection.current.createAnswer();
+              await peerConnection.current.setLocalDescription(answer);
+              sendSignal(1, answer);
+            } else if (signal_type === 1 && isHost) { // Answer
+              await peerConnection.current.setRemoteDescription(new RTCSessionDescription(parsedPayload));
+            } else if (signal_type === 2) { // ICE
+              try {
+                await peerConnection.current.addIceCandidate(new RTCIceCandidate(parsedPayload));
+              } catch (e) {
+                console.error('Error adding ICE', e);
+              }
             }
-          } else if (signal_type === 3) { // Leave
-            setRemoteStream(null);
           }
-        };
+        });
+        
+        unsubscribeRef.current = unsubscribe;
 
         if (isHost) {
           setTimeout(async () => {
             const offer = await peerConnection.current.createOffer();
             await peerConnection.current.setLocalDescription(offer);
             sendSignal(0, offer);
-          }, 2000); // Give peer time to join
+          }, 4000); // Wait for subscription to propagate
         }
       } catch (err) {
         console.error('Failed to init WebRTC:', err);
@@ -97,14 +152,13 @@ export const useWebRTC = (suiClient, keypair, roomId, isHost) => {
     init();
 
     return () => {
-      sendSignal(3, { message: 'leave' });
       localStream?.getTracks().forEach(track => track.stop());
       peerConnection.current?.close();
-      if (channelRef.current) {
-        setTimeout(() => channelRef.current.close(), 100);
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current().catch(console.error);
       }
     };
-  }, [roomId, isHost]);
+  }, [roomId, keypair]); // Note: suiClient and isHost usually static, omitted from deps
 
-  return { localStream, remoteStream, peerConnectionRef: peerConnection };
+  return { localStream, remoteStream, peerConnectionRef: peerConnection, sendChatMessage };
 };

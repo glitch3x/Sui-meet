@@ -5,7 +5,7 @@ import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 
 const SuiContext = createContext(null);
 
-export const PACKAGE_ID = "0x9d3995a4faab8aef24c83360c646b1ee2ff16c1589e2a386df73ffeeca443e8f";
+export const PACKAGE_ID = "0x2f641e62adaa6470fc11896b5842492f53fd50c59778a175e7d44648ecbdae0b";
 
 // Initialize a client to testnet
 const client = new SuiJsonRpcClient({ url: getJsonRpcFullnodeUrl('testnet'), network: 'testnet' });

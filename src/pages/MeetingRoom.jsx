@@ -18,11 +18,14 @@ import {
   Zap,
   Lock,
   ChevronRight,
-  Activity
+  Activity,
+  Circle,
+  StopCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useSui } from '../context/SuiContext';
+import { useSui, PACKAGE_ID } from '../context/SuiContext';
+import { Transaction } from '@mysten/sui/transactions';
 
 import { useWebRTC } from '../hooks/useWebRTC';
 
@@ -84,6 +87,8 @@ const MeetingRoom = () => {
   const [videoOn, setVideoOn] = useState(true);
   const [chatOpen, setChatOpen] = useState(false);
   const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   
   const [messages, setMessages] = useState([
     { sender: "System", text: "Connection established. P2P stream is active.", time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), isSelf: false }
@@ -92,8 +97,12 @@ const MeetingRoom = () => {
   
   const chatChannelRef = useRef(null);
   const originalVideoTrackRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const recordedChunksRef = useRef([]);
   
-  const { localStream, remoteStream, peerConnectionRef } = useWebRTC(suiClient, keypair, roomId, isHost);
+  const { localStream, remoteStream, peerConnectionRef, sendChatMessage } = useWebRTC(suiClient, keypair, roomId, isHost, (msg) => {
+    setMessages(prev => [...prev, msg]);
+  });
 
   // Mute/Unmute microphone
   useEffect(() => {
@@ -113,19 +122,7 @@ const MeetingRoom = () => {
     }
   }, [videoOn, localStream, isScreenSharing]);
 
-  // Live Chat Logic
-  useEffect(() => {
-    if (!roomId) return;
-    chatChannelRef.current = new BroadcastChannel(`chat_room_${roomId}`);
-    
-    chatChannelRef.current.onmessage = (event) => {
-      setMessages(prev => [...prev, event.data]);
-    };
-    
-    return () => {
-      if (chatChannelRef.current) chatChannelRef.current.close();
-    };
-  }, [roomId]);
+  // Live Chat Logic (now handled by DataChannel callback in useWebRTC)
 
   const handleSendMessage = () => {
     if (!chatInput.trim()) return;
@@ -137,9 +134,7 @@ const MeetingRoom = () => {
       isSelf: false
     };
     
-    if (chatChannelRef.current) {
-      chatChannelRef.current.postMessage(newMsg);
-    }
+    sendChatMessage(newMsg);
     
     setMessages(prev => [...prev, { ...newMsg, isSelf: true }]);
     setChatInput('');
@@ -194,6 +189,81 @@ const MeetingRoom = () => {
     }
   };
 
+  const handleToggleRecording = () => {
+    if (!isRecording) {
+      if (!localStream) return alert("No stream to record!");
+      recordedChunksRef.current = [];
+      const options = { mimeType: 'video/webm; codecs=vp9' };
+      try {
+        const mediaRecorder = new MediaRecorder(localStream, options);
+        mediaRecorderRef.current = mediaRecorder;
+        
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) {
+            recordedChunksRef.current.push(e.data);
+          }
+        };
+
+        mediaRecorder.onstop = async () => {
+          setIsUploading(true);
+          const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+          console.log("Recording stopped. Blob size:", blob.size);
+          
+          try {
+            // Real Walrus Upload
+            const response = await fetch('https://publisher.walrus-testnet.walrus.space/v1/store', {
+              method: 'PUT',
+              body: blob,
+            });
+            const data = await response.json();
+            
+            let walrusBlobId;
+            if (data.alreadyCertified) {
+              walrusBlobId = data.alreadyCertified.blobId;
+            } else if (data.newlyCreated) {
+              walrusBlobId = data.newlyCreated.blobObject.blobId;
+            } else {
+              throw new Error("Invalid Walrus Response");
+            }
+            
+            // Submit to Sui smart contract
+            const tx = new Transaction();
+            tx.moveCall({
+              target: `${PACKAGE_ID}::room::submit_recording`,
+              arguments: [
+                tx.object(roomId),
+                tx.pure.string(walrusBlobId)
+              ],
+            });
+            
+            const result = await suiClient.signAndExecuteTransaction({
+              transaction: tx,
+              signer: keypair,
+              options: { showEffects: true }
+            });
+            console.log("Recording submitted to Sui:", result);
+            alert(`Recording successfully uploaded to Walrus! Blob ID: ${walrusBlobId}`);
+          } catch (err) {
+            console.error("Failed to submit recording:", err);
+            alert("Recording saved locally, but failed to submit to network.");
+          } finally {
+            setIsUploading(false);
+          }
+        };
+
+        mediaRecorder.start();
+        setIsRecording(true);
+      } catch (err) {
+        console.error("Error starting recorder:", err);
+      }
+    } else {
+      if (mediaRecorderRef.current) {
+        mediaRecorderRef.current.stop();
+        setIsRecording(false);
+      }
+    }
+  };
+
   return (
     <div className="h-screen bg-white flex flex-col font-sans overflow-hidden relative">
       <div className="absolute inset-0 bg-grid pointer-events-none opacity-20" />
@@ -221,7 +291,7 @@ const MeetingRoom = () => {
         <div className="flex items-center gap-4">
           <div className="bg-slate-50 border border-slate-200 px-4 py-2 rounded-xl flex items-center gap-2 group transition-all">
             <Database className="w-4 h-4 text-primary" />
-            <p className="text-slate-500 text-[10px] font-bold uppercase">Archiving to Walrus</p>
+            <p className="text-slate-500 text-[10px] font-bold uppercase">{isUploading ? 'Uploading to Walrus...' : 'Archiving to Walrus'}</p>
           </div>
           <button 
             onClick={() => navigate('/dashboard')}
@@ -337,6 +407,13 @@ const MeetingRoom = () => {
             <button className="w-14 h-14 rounded-2xl bg-slate-50 text-slate-600 hover:bg-slate-100 flex items-center justify-center transition-all relative group">
               <Users className="w-6 h-6" />
               <div className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">2</div>
+            </button>
+            <button 
+              onClick={handleToggleRecording}
+              disabled={isUploading}
+              className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${isRecording ? 'bg-red-500 text-white animate-pulse' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'} ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {isRecording ? <StopCircle className="w-6 h-6" /> : <Circle className="w-6 h-6" />}
             </button>
           </div>
           

@@ -21,7 +21,7 @@ const Navbar = () => {
   return (
     <nav className="neobrutal-nav">
       <div className="flex items-center gap-2 md:gap-3">
-        <div className="w-8 h-8 md:w-10 md:h-10 border-[2px] md:border-[3px] border-black rounded-lg md:rounded-xl flex items-center justify-center bg-white" style={{ boxShadow: '3px 3px 0px 0px #000' }}>
+        <div className="w-8 h-8 md:w-10 md:h-10 border md:border border-gray-200 rounded-lg md:rounded-xl flex items-center justify-center bg-white" >
           <Video className="text-black w-4 h-4 md:w-6 md:h-6" />
         </div>
         <span className="text-lg md:text-2xl font-bold tracking-tight text-black font-heading">SuiMeet</span>
@@ -34,7 +34,7 @@ const Navbar = () => {
       </div>
 
       <div className="flex justify-end">
-        <ConnectButton className="!bg-black !text-white !font-bold !border-[2px] md:!border-[3px] !border-black !rounded-lg md:!rounded-xl !shadow-[2px_2px_0px_0px_#008248] md:!shadow-[4px_4px_0px_0px_#008248] hover:!translate-y-1 transition-transform !px-3 md:!px-6 !py-1.5 md:!py-3 !text-xs md:!text-base flex items-center" />
+        <ConnectButton className="!bg-black !text-white !font-bold !border md:!border !border-gray-200 !rounded-lg md:!rounded-xl !shadow-sm md:!shadow-sm hover:!translate-y-1 transition-transform !px-3 md:!px-6 !py-1.5 md:!py-3 !text-xs md:!text-base flex items-center" />
       </div>
     </nav>
   );
@@ -47,7 +47,7 @@ const FeatureCard = ({ icon: Icon, title, description }) => (
     viewport={{ once: true }}
     className="neobrutal-card flex flex-col gap-6"
   >
-    <div className="w-14 h-14 border-[3px] border-black rounded-2xl flex items-center justify-center bg-white transition-transform duration-500 hover:-translate-y-1" style={{ boxShadow: '4px 4px 0px 0px #000' }}>
+    <div className="w-14 h-14 border border-gray-200 rounded-2xl flex items-center justify-center bg-white transition-transform duration-500 hover:-translate-y-1" >
       <Icon className="text-black w-7 h-7" />
     </div>
     <h3 className="text-2xl font-bold text-black font-heading">{title}</h3>
@@ -68,13 +68,13 @@ const Landing = () => {
           transition={{ duration: 0.5 }}
           className="flex flex-col items-center"
         >
-          <div className="inline-flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-1.5 md:py-2 rounded-full border-[2px] md:border-[3px] border-black bg-white font-bold text-[9px] md:text-sm text-black mb-6 md:mb-10 uppercase tracking-widest shadow-[3px_3px_0px_0px_#000] md:shadow-[4px_4px_0px_0px_#000]">
+          <div className="inline-flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-1.5 md:py-2 rounded-full border md:border border-gray-200 bg-white font-bold text-[9px] md:text-sm text-black mb-6 md:mb-10 uppercase tracking-widest shadow-sm md:shadow-sm">
             <Zap className="w-3 h-3 md:w-4 md:h-4" />
             Empowering Sovereign Communication
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold leading-[1.1] mb-6 md:mb-8 text-black max-w-4xl font-heading">
             The World's <br className="hidden md:block" />
-            <span className="text-white bg-[#008248] px-3 md:px-4 py-1 inline-block border-[2px] md:border-[3px] border-black shadow-[4px_4px_0px_0px_#000] md:shadow-[6px_6px_0px_0px_#000] transform -rotate-2 my-2">Decentralized</span> <br className="hidden md:block" />
+            <span className="text-white bg-[#008248] px-3 md:px-4 py-1 inline-block border md:border border-gray-200 shadow-sm md:shadow-sm transform -rotate-2 my-2">Decentralized</span> <br className="hidden md:block" />
             Meeting Protocol
           </h1>
           <p className="text-slate-600 font-medium text-base md:text-xl mb-10 md:mb-12 max-w-2xl leading-relaxed">
@@ -93,15 +93,15 @@ const Landing = () => {
           </div>
 
           <div className="flex flex-wrap justify-center gap-10 md:gap-16">
-             <div className="border-[3px] border-black px-6 py-3 rounded-xl font-bold text-lg uppercase shadow-[4px_4px_0px_0px_#000] bg-white">Sui Network</div>
-             <div className="border-[3px] border-black px-6 py-3 rounded-xl font-bold text-lg uppercase shadow-[4px_4px_0px_0px_#000] bg-white">Walrus</div>
-             <div className="border-[3px] border-black px-6 py-3 rounded-xl font-bold text-lg uppercase shadow-[4px_4px_0px_0px_#000] bg-white">zkLogin</div>
+             <div className="border border-gray-200 px-6 py-3 rounded-xl font-bold text-lg uppercase shadow-sm bg-white">Sui Network</div>
+             <div className="border border-gray-200 px-6 py-3 rounded-xl font-bold text-lg uppercase shadow-sm bg-white">Walrus</div>
+             <div className="border border-gray-200 px-6 py-3 rounded-xl font-bold text-lg uppercase shadow-sm bg-white">zkLogin</div>
           </div>
         </motion.div>
       </section>
 
       {/* Features Section */}
-      <section className="relative py-32 px-6 border-t-[3px] border-black bg-[#f0fdf4]">
+      <section className="relative py-32 px-6 border-t-[3px] border-gray-200 bg-[#f0fdf4]">
         <div className="max-w-7xl mx-auto">
           <div className="mb-20 text-center">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-black font-heading">Infrastructure-First Design</h2>
@@ -129,8 +129,8 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-32 px-6 border-t-[3px] border-black bg-white">
-        <div className="max-w-7xl mx-auto border-[3px] border-black bg-[#008248] p-12 md:p-24 relative overflow-hidden rounded-[40px] shadow-[12px_12px_0px_0px_#000]">
+      <section className="relative py-32 px-6 border-t-[3px] border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto border border-gray-200 bg-[#008248] p-12 md:p-24 relative overflow-hidden rounded-[40px] shadow-sm">
           <div className="relative z-10 text-center flex flex-col items-center">
             <h2 className="text-4xl md:text-6xl font-bold mb-8 leading-tight text-white font-heading">
               Ready to experience <br />
@@ -148,11 +148,11 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t-[3px] border-black py-20 px-8 bg-[#f0fdf4]">
+      <footer className="border-t-[3px] border-gray-200 py-20 px-8 bg-[#f0fdf4]">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16">
           <div className="col-span-1">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 border-[3px] border-black bg-white rounded-xl flex items-center justify-center shadow-[3px_3px_0px_0px_#000]">
+              <div className="w-10 h-10 border border-gray-200 bg-white rounded-xl flex items-center justify-center shadow-sm">
                 <Video className="text-black w-6 h-6" />
               </div>
               <span className="text-2xl font-bold text-black font-heading">SuiMeet</span>
@@ -186,14 +186,14 @@ const Landing = () => {
             <h4 className="font-bold text-black mb-6 text-sm uppercase tracking-widest font-heading">Community</h4>
             <div className="flex gap-4">
               {[Send, MessageSquare, ExternalLink].map((Icon, i) => (
-                <div key={i} className="w-12 h-12 bg-white border-[3px] border-black rounded-xl flex items-center justify-center hover:-translate-y-1 transition-transform cursor-pointer text-black shadow-[4px_4px_0px_0px_#000]">
+                <div key={i} className="w-12 h-12 bg-white border border-gray-200 rounded-xl flex items-center justify-center hover:-translate-y-1 transition-transform cursor-pointer text-black shadow-sm">
                   <Icon className="w-5 h-5" />
                 </div>
               ))}
             </div>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto mt-20 pt-8 border-t-[3px] border-black flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-black font-bold uppercase tracking-widest">
+        <div className="max-w-7xl mx-auto mt-20 pt-8 border-t-[3px] border-gray-200 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-black font-bold uppercase tracking-widest">
           <span>© 2026 SuiMeet. Built on Sui.</span>
           <div className="flex gap-8">
             <span className="hover:text-[#008248] cursor-pointer transition-colors">Privacy</span>
