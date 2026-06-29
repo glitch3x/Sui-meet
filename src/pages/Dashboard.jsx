@@ -10,7 +10,7 @@ import { Transaction } from '@mysten/sui/transactions';
 import { useState } from 'react';
 
 const Dashboard = () => {
-  const { userAddress, loginWithGoogle, isLoading, suiClient, keypair } = useSui();
+  const { userAddress, initializeInvisibleWallet, logout, isLoading, suiClient, keypair } = useSui();
   const [isCreating, setIsCreating] = useState(false);
   const [joinId, setJoinId] = useState('');
   const [joinPassword, setJoinPassword] = useState('');
@@ -203,11 +203,11 @@ const Dashboard = () => {
               <img src="/avatar.png" className="w-full h-full object-cover" alt="User" />
             </div>
             <button 
-              onClick={loginWithGoogle}
+              onClick={userAddress ? logout : initializeInvisibleWallet}
               disabled={isLoading}
-              className={`neobrutal-btn !px-6 !py-2 text-sm ${userAddress ? 'secondary' : 'primary'}`}
+              className={`neobrutal-btn !px-6 !py-2 text-sm ${userAddress ? 'bg-slate-100 text-black border border-gray-200' : 'bg-black text-white'}`}
             >
-              {isLoading ? 'Syncing...' : userAddress ? 'Active' : 'Initialize'}
+              {isLoading ? 'Syncing...' : userAddress ? 'Disconnect' : 'Initialize'}
             </button>
           </div>
         </header>

@@ -81,6 +81,7 @@ export const SuiProvider = ({ children }) => {
         isConnected,
         logout,
         mintSessionNft,
+        initializeInvisibleWallet,
       }}
     >
       {children}
